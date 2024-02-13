@@ -1,0 +1,30 @@
+{
+  "name": "daily-diet",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "knex": "node --import tsx ./node_modules/knex/bin/cli.js",
+    "build": "tsup src --out-dir build",
+    "test": "vitest --run"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^9.3.1",
+    "dotenv": "^16.4.4",
+    "fastify": "^4.26.1",
+    "knex": "^3.1.0",
+    "pg": "^8.11.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "@types/supertest": "^6.0.2",
+    "sqlite3": "^5.1.7",
+    "supertest": "^6.3.4",
+    "tsup": "^8.0.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
+  }
+}
