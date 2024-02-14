@@ -103,6 +103,45 @@ export async function mealsRoutes(app: FastifyInstance) {
     })
 
     app.get('/metrics', { preHandler: checkCookies }, async (request, reply) => {
+        const mealsOnDiet = await knex('meals')
+            .where({
+                user_id: request.user?.id,
+                is_on_diet: true
+            })
+            .count('id', { as: 'total' })
+            .first()
 
+        const mealsOffDiet = await knex('meals')
+            .where({
+                user_id: request.user?.id,
+                is_on_diet: false
+            })
+            .count('id', { as: 'total' })
+            .first()
+
+        const totalMeals = await knex('meals')
+            .where({ user_id: request.user?.id })
+            .orderBy('date', 'desc')
+
+        const { streakOnDiet } = totalMeals.reduce((acc, meal) => {
+            if (meal.is_on_diet) {
+                acc.current++
+            } else {
+                acc.current = 0
+            }
+
+            if (acc.current > acc.streakOnDiet) {
+                acc.streakOnDiet = acc.current
+            }
+
+            return acc
+        }, { streakOnDiet: 0, current: 0 })
+
+        return reply.send({
+            totalMeals: totalMeals.length,
+            mealsOnDiet: mealsOnDiet?.total,
+            mealsOffDiet: mealsOffDiet?.total,
+            streakOnDiet
+        })
     })
 }
